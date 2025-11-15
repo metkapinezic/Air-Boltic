@@ -1,0 +1,16 @@
+AirBoltic_dbt:
+  outputs:
+    dev:
+      type: snowflake
+      account: jgkgbtv-fw95428
+      user: dbt
+
+      role: TRANSFORM
+      private_key: "-----BEGIN ENCRYPTED PRIVATE KEY-----\nMIIFNTBfBgkqhkiG9w0BBQ0wUjAxBgkqhkiG9w0BBQwwJAQQtG1UUOgbYhtbfq7c\ndj7yBgICCAAwDAYIKoZIhvcNAgkFADAdBglghkgBZQMEASoEEJEpJniVIxyTPamI\nB7gpEV0EggTQAEghi/jBxfMmLee/LzB01jGQE0/fxcmXVEhK/5RjjN79+m6bAe5q\nNmk+02NaE7bcmqEjV2IjIZ76kpqjVy4H5O4RQkYdtRK6BHu1SauBaZuvO7uzOO5E\nroKYDuIRRvXq97m6PxkDoU+u1JJE9rKHq8xqf2217/8U2pMjGNnwTbuHcSFV3GAc\nmiT+ArPu19cyH74jpg3gSmPvfHxE/azd/ZwIh7L8kNUPQumV7dd+3lEOmtIWxB6O\nlbr2VIVj8532W5kZKUkWHTnFgZxRvIMfzm0RyaAtnhBd2+OaOb5AIfUynGDA056p\n/Yad2UgzGN8WHe4GnaEgNo7EStj6rgI9AedtCYuC7+ttwnt4Y0mKbHjQJPA+AEA7\nitI3BkY+1R3fkrpQZwBKRPoWEez0DAEdHO8p/rXF9Z9uBlMkPH8tUz8gOdrPlYF7\nhi+ZItUjGKSSQm6NwHpX/nNIGffmMMEInUnhAjXw4a5pCvrw1DqWfsCcqIkcmFfK\nCvUpiXJTKzY0iUbmYigFhsIZ51UgVkFfrg7TMxABVDD9NzqvIXFw3mWUSxZr8KcE\nx57QPXgqOPl4AJKwX11b0MZUA62uIGp+UE6cFerrWpNu+uET6CeN37I+rncAGcH7\npielLFML1W6YI3BuSzFfyHbCO66cWb7PBviP4kxHGqHrIgi0xrP46SxfY7hoeZnE\nP4OGszeU4R6it2vkbBMGOQ67oRII91N+XTUHAuLWSe1uMjGCCQewc4TyWX83IZHa\n/rvYCr7cx75nSQqCLllMrnsuzaMqiuiHK824Qw07bNSlW/tongzmSScyR6ktaqH8\nzA5FoYyhrdiPJDdeYfB3PJe+Ru+Z+0xS8EWriPZ/ygKny6HNDSRVc7+ocxy8mKZ4\nFCNpC+QtuHOzCdArXcbhykzHH6Hi2eNHIoKMXQZWVl9C3LwJYvYdLjt8DYNHw9Hc\n81GpQBaXCObWOBCz9o6Kpog/UkcDYpmqNFDb3YVeFuXL4hydA6H1F9MfhvEbxuR6\ns8wxefwKIMbRmm+7suXc5sNctqqhaQ+9uX/7ZsKYk/vC57b9n5xmu5iPk1j5zCYb\n4J7dlKiQcqcJJrtC94JLICYnxz4auBPerKgUMvSCDsaeArXBROep/8w8YJ+pQlCK\nmSzWniCiUGjdR9mW2fu6zI9Nry9DGz/y3WMZFGpha+YX41BRDGHbOyilnKEU/X/7\nDtb7spVimax5u9uQviV0uf4hO/j6tVD8oXDCWPy/V9xXQ+qbVLaq/G0XJq/vC8LB\nsaUczzxWw0W8BcrLo8lhwDKMknJx8hGFmG/hwGL+0yrHI5m1RbpPcPrFWtxPia3W\nT8h6n5Yf0aPfe/Vaa3Nu4ozaLbbOivHR+DO9b46ogbbSFObrhS74fNMKGnxK0KyU\n+imcWwj5JDiL5oFNbun40G3kGY80dn3OfF+Sd+oC6iJwxNRvsiR25OyqW/ANP7ig\nyJagzz4Ga03wlI39xJlL9g68qwGcUH/ArsgD9orcWYdRp8ytWBraO5vFLUVplzQZ\n69SvethQMa7gZfHuZqDM/DvSXfUdgzj7lymVnblHKb2V/LPiLfN6xnkhHGlOdPwx\neoTKEAelXZG4JJ6Osuf2t8gO4ngUlMMQ22U1GH1KIjy1YnvOfJVrZK0=\n-----END ENCRYPTED PRIVATE KEY-----\n"
+      private_key_passphrase: q
+
+      database: AIRBOLTIC
+      schema: ABDEV
+      threads: 1
+      warehouse: COMPUTE_WH
+  target: dev
