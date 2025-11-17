@@ -1,0 +1,137 @@
+version: 2
+
+models:
+#### DIM CUSTOMERS ##############################################
+  - name: dim_customers
+    description: "Dimension table for customers"
+    columns:
+      - name: customer_key
+        description: "Surrogate key for the customer"
+        data_tests:
+          - unique
+          - not_null
+
+      - name: customer_id
+        description: "Unique identifier for each customer"
+        data_tests:
+          - unique
+          - not_null
+
+      - name: customer_name
+        description: "Customer's first name and last name"
+
+      - name: email
+        description: "Customer's email address"
+        data_tests:
+          - not_null
+
+      - name: customer_group_id
+        description: "Group ID to which the customer belongs"
+        data_tests:
+          - not_null
+          - relationships:
+              field: id
+              to: ref('src_customer_group')
+
+      - name: customer_group_type
+        description: "Group type of the customer"
+        data_tests:
+          - accepted_values:
+              values: ['Company', 'Private Group', 'Organisation']
+
+      - name: customer_group_name
+        description: "Group name of the customer"
+
+      - name: customer_group_registry_number
+        description: "Group registry number of the customer"
+
+#### DIM AEROPLANES ##############################################
+  - name: dim_aeroplanes
+    description: "Dimension table for aeroplanes"
+    columns:
+      - name: aeroplane_key
+        description: "Surrogate key for the aeroplane"
+        data_tests:
+          - unique
+          - not_null
+
+      - name: airplane_id
+        description: "Unique identifier for each aeroplane"
+        data_tests:
+          - not_null
+          - unique
+
+      - name: manufacturer
+        description: "Manufacturer of the aeroplane"
+        data_tests:
+          - not_null
+          - relationships:
+              field: manufacturer
+              to: ref('src_aeroplane_model')
+
+      - name: airplane_model
+        description: "Model name of the aeroplane"
+        data_tests:
+          - relationships:
+              to: ref('src_aeroplane_model')
+              field: model
+
+      - name: max_seats 
+        description: "Maximum seating capacity of the aeroplane"  
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              inclusive: true
+
+      - name: max_weight
+        description: "Maximum weight capacity of the aeroplane" 
+
+      - name: max_distance
+        description: "Maximum distance the aeroplane can fly"
+
+      - name: engine_type
+        description: "Type of engine used in the aeroplane" 
+
+
+#### DIM ROUTES ##############################################
+  - name: dim_routes
+    description: "Dimension table for flight routes with travel time statistics"
+    columns:
+      - name: route_key
+        description: "Surrogate key for the route"
+        data_tests:
+          - unique
+          - not_null
+        
+      - name: origin_city
+        description: "Departure city"
+        data_tests:
+          - not_null
+        
+      - name: destination_city
+        description: "Arrival city"
+        data_tests:
+          - not_null
+        
+      - name: route_name
+        description: "Formatted route name (Origin → Destination)"
+        
+      - name: avg_travel_time_minutes
+        description: "Average travel time in minutes for this route"
+        
+      - name: min_travel_time_minutes
+        description: "Minimum recorded travel time in minutes"
+        
+      - name: max_travel_time_minutes
+        description: "Maximum recorded travel time in minutes"
+        
+      - name: avg_travel_time_hours
+        description: "Average travel time in hours (rounded to 2 decimals)"
+        
+      - name: total_trips
+        description: "Total number of trips on this route"
+        data_tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              inclusive: true

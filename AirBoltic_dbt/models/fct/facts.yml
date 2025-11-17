@@ -1,0 +1,170 @@
+version: 2
+
+models:
+#### FCT_ORDERS ##############################################
+  - name: fct_orders
+    description: "Fact table for customer orders/bookings"
+    columns:
+      - name: order_key
+        description: "Surrogate key for the order"
+        data_tests:
+          - unique
+          - not_null
+      
+      - name: order_id
+        description: "Natural key - unique order identifier"
+        data_tests:
+          - unique
+          - not_null
+      
+      - name: customer_id
+        description: "Foreign key to dim_customers"
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+      
+      - name: trip_id
+        description: "Foreign key to fct_trips"
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('fct_trips')
+              field: trip_id
+      
+      - name: seat_no
+        description: "Seat number assigned to the customer"
+        data_tests:
+          - not_null
+      
+      - name: status
+        description: "Order status"
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['Booked', 'Finished', 'Cancelled']
+      
+      - name: price_eur
+        description: "Order price in EUR"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      
+      - name: booking_date
+        description: "Date when the booking was made"
+        data_tests:
+          - not_null
+      
+      - name: trip_start_timestamp
+        description: "Scheduled start time of the trip"
+      
+      - name: trip_end_timestamp
+        description: "Scheduled end time of the trip"
+
+#### FCT_TRIPS ##############################################
+  - name: fct_trips
+    description: "Fact table for completed trips with performance and revenue metrics"
+    columns:
+      - name: trip_key
+        description: "Surrogate key for the trip"
+        data_tests:
+          - unique
+          - not_null
+      
+      - name: trip_id
+        description: "Natural key - unique trip identifier"
+        data_tests:
+          - unique
+          - not_null
+      
+      - name: airplane_id
+        description: "Foreign key to dim_aeroplanes"
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_aeroplanes')
+              field: airplane_id
+      
+      - name: route_key
+        description: "Surrogate key for the route (origin_city + destination_city)"
+        data_tests:
+          - not_null
+      
+      - name: origin_city
+        description: "Departure city"
+        data_tests:
+          - not_null
+      
+      - name: destination_city
+        description: "Arrival city"
+        data_tests:
+          - not_null
+      
+      - name: route_name
+        description: "Formatted route name (Origin → Destination)"
+      
+      - name: start_timestamp
+        description: "Actual trip start time"
+        data_tests:
+          - not_null
+      
+      - name: end_timestamp
+        description: "Actual trip end time"
+        data_tests:
+          - not_null
+      
+      - name: duration_minutes
+        description: "Actual trip duration in minutes"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1440
+              inclusive: true
+      
+      - name: route_avg_travel_time_minutes
+        description: "Average travel time for this route across all trips"
+      
+      - name: variance_from_avg_minutes
+        description: "Difference from route average (positive = slower than average)"
+      
+      - name: seats_sold
+        description: "Number of seats sold for this trip"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      
+      - name: total_revenue_eur
+        description: "Total revenue from this trip in EUR"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      
+      - name: unique_customers
+        description: "Number of unique customers on this trip"
+        data_tests:
+          - not_null
+      
+      - name: aircraft_capacity
+        description: "Maximum seating capacity of the aircraft"
+        data_tests:
+          - not_null
+      
+      - name: load_factor_pct
+        description: "Percentage of seats filled (seats_sold / aircraft_capacity * 100)"
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100
+              inclusive: true
+      
+      - name: dbt_updated_at
+        description: "Timestamp when this record was last updated by dbt"

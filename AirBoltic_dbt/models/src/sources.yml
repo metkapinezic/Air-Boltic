@@ -1,0 +1,12 @@
+sources:
+  - name: airboltic
+    database: AIRBOLTIC
+    schema: AB_RAW
+    tables:
+      - name: AEROPLANE_MODEL
+      - name: AEROPLANE
+      - name: CUSTOMER
+      - name: CUSTOMER_GROUP
+      - name: orders  
+        identifier: '"ORDER"'  
+      - name: TRIP
