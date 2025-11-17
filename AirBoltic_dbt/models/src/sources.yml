@@ -1,12 +1,198 @@
+version: 2
+
 sources:
   - name: airboltic
     database: AIRBOLTIC
     schema: AB_RAW
+    description: "Raw data from Air Boltic operational systems"
+    
     tables:
       - name: AEROPLANE_MODEL
+        description: "Available aircraft models on the market"
+        columns:
+          - name: manufacturer
+            description: "Aircraft manufacturer"
+            data_tests:
+              - not_null
+          
+          - name: model
+            description: "Model identifier"
+            data_tests:
+              - not_null
+          
+          - name: max_seats
+            description: "Maximum seating capacity"
+            data_tests:
+              - not_null
+              - dbt_utils.accepted_range:
+                  min_value: 1
+                  max_value: 1000
+                  inclusive: true
+          
+          - name: max_weight
+            description: "Maximum weight capacity"
+          
+          - name: max_distance
+            description: "Maximum flight distance"
+          
+          - name: engine_type
+            description: "Type of engine"
+      
       - name: AEROPLANE
+        description: "Individual aircraft in the fleet"
+        columns:
+          - name: Airplane_ID
+            description: "Unique aircraft identifier"
+            data_tests:
+              - unique
+              - not_null
+          
+          - name: manufacturer
+            description: "Aircraft manufacturer"
+            data_tests:
+              - not_null
+          
+          - name: Airplane_Model
+            description: "Model name"
+            data_tests:
+              - not_null
+              - relationships:
+                  to: source('airboltic', 'AEROPLANE_MODEL')
+                  field: model
+      
       - name: CUSTOMER
+        description: "Customer records"
+        columns:
+          - name: Customer_ID
+            description: "Unique customer identifier"
+            data_tests:
+              - unique
+              - not_null
+          
+          - name: Name
+            description: "Customer name"
+            data_tests:
+              - not_null
+          
+          - name: Email
+            description: "Customer email"
+            data_tests:
+              - not_null
+          
+          - name: Phone_Number
+            description: "Customer phone number"
+          
+          - name: Customer_Group_ID
+            description: "Reference to customer group"
+            data_tests:
+              - not_null
+              - relationships:
+                  to: source('airboltic', 'CUSTOMER_GROUP')
+                  field: ID
+      
       - name: CUSTOMER_GROUP
-      - name: orders  
-        identifier: '"ORDER"'  
+        description: "Customer group organizations"
+        columns:
+          - name: ID
+            description: "Unique group identifier"
+            data_tests:
+              - unique
+              - not_null
+          
+          - name: Type
+            description: "Type of customer group"
+            data_tests:
+              - not_null
+              - accepted_values:
+                  values: ['Company', 'Private Group', 'Organisation']
+          
+          - name: Name
+            description: "Group name"
+            data_tests:
+              - not_null
+          
+          - name: Registry_number
+            description: "Group registry number"
+      
+      - name: orders
+        identifier: '"ORDER"'
+        description: "Customer booking orders"
+        columns:
+          - name: Order_ID
+            description: "Unique order identifier"
+            data_tests:
+              - unique
+              - not_null
+          
+          - name: Customer_ID
+            description: "Reference to customer"
+            data_tests:
+              - not_null
+              - relationships:
+                  to: source('airboltic', 'CUSTOMER')
+                  field: Customer_ID
+          
+          - name: Trip_ID
+            description: "Reference to trip"
+            data_tests:
+              - not_null
+              - relationships:
+                  to: source('airboltic', 'TRIP')
+                  field: Trip_ID
+          
+          - name: Price_EUR
+            description: "Order price in EUR"
+            data_tests:
+              - not_null
+              - dbt_utils.accepted_range:
+                  min_value: 0
+                  inclusive: true
+          
+          - name: Seat_No
+            description: "Seat number assigned"
+            data_tests:
+              - not_null
+          
+          - name: Status
+            description: "Order status"
+            data_tests:
+              - not_null
+              - accepted_values:
+                  values: ['Pending', 'Confirmed', 'Finished', 'Cancelled']
+      
       - name: TRIP
+        description: "Scheduled flights"
+        columns:
+          - name: Trip_ID
+            description: "Unique trip identifier"
+            data_tests:
+              - unique
+              - not_null
+          
+          - name: Airplane_ID
+            description: "Reference to aircraft"
+            data_tests:
+              - not_null
+              - relationships:
+                  to: source('airboltic', 'AEROPLANE')
+                  field: Airplane_ID
+          
+          - name: Origin_City
+            description: "Departure city"
+            data_tests:
+              - not_null
+          
+          - name: Destination_City
+            description: "Arrival city"
+            data_tests:
+              - not_null
+          
+          - name: Start_Timestamp
+            description: "Trip start time"
+            data_tests:
+              - not_null
+          
+          - name: End_Timestamp
+            description: "Trip end time"
+            data_tests:
+              - not_null
