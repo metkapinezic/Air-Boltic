@@ -33,10 +33,15 @@ models:
   AirBoltic_dbt:
     # Source models
     src:
-      +materialized: view
+      +materialized: table
       +schema: src
     
     # Dimension tables
     dim:
       +materialized: table 
       +schema: dim
+
+# Fact tables
+    dim:
+      +materialized: view 
+      +schema: fct
