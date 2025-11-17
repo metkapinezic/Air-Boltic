@@ -10,7 +10,8 @@ AirBoltic_dbt:
       private_key_passphrase: q
 
       database: AIRBOLTIC
-      schema: ABDEV
+      schema: AB_DEV
       threads: 1
       warehouse: COMPUTE_WH
+      query_tag: dbt_debug
   target: dev
