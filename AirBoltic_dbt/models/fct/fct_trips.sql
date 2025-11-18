@@ -6,8 +6,9 @@ orders as (
     select 
         trip_id,
         count(*) as seats_sold,
-        sum(price_eur) as total_revenue_eur,
-        count(distinct customer_id) as unique_customers
+        sum(price_eur) as trip_revenue_eur,
+        count(distinct customer_id) as unique_customers,
+        sum(price_eur) / nullif(count(distinct customer_id), 0) as revenue_per_customer_eur
     from {{ ref('src_order') }}
     where status = 'Finished'  
     group by trip_id
@@ -17,15 +18,6 @@ aeroplanes as (
     select * from {{ ref('dim_aeroplanes') }}
 ),
 
--- Calculate route stats directly (don't reference dim_routes)
-route_stats as (
-    select 
-        origin_city,
-        destination_city,
-        avg(timestampdiff(minute, start_timestamp, end_timestamp)) as avg_travel_time_minutes
-    from {{ ref('src_trip') }}
-    group by origin_city, destination_city
-),
 
 fct_trips as (
     select
@@ -46,30 +38,23 @@ fct_trips as (
         t.start_timestamp,
         t.end_timestamp,
         
-        -- Calculated measures
-        timestampdiff(minute, t.start_timestamp, t.end_timestamp) as duration_minutes,
-        
-        -- Route benchmark
-        rs.avg_travel_time_minutes as route_avg_travel_time_minutes,
-        timestampdiff(minute, t.start_timestamp, t.end_timestamp) - rs.avg_travel_time_minutes as variance_from_avg_minutes,
+    
         
         -- Aggregated order metrics
         coalesce(o.seats_sold, 0) as seats_sold,
-        coalesce(o.total_revenue_eur, 0) as total_revenue_eur,
+        coalesce(o.trip_revenue_eur, 0) as trip_revenue_eur,
         coalesce(o.unique_customers, 0) as unique_customers,
+        round(coalesce(o.revenue_per_customer_eur, 0), 2) as revenue_per_customer_eur,
         
         -- Capacity metrics
         a.max_seats as aircraft_capacity,
-        round(coalesce(o.seats_sold, 0) / nullif(a.max_seats, 0) * 100, 2) as load_factor_pct,
+        round(coalesce(o.seats_sold, 0) / nullif(a.max_seats, 0), 4) as load_factor,
         
         -- Audit columns
         current_timestamp() as dbt_updated_at
     from trips t
     left join orders o on t.trip_id = o.trip_id
     left join aeroplanes a on t.airplane_id = a.airplane_id
-    left join route_stats rs 
-        on t.origin_city = rs.origin_city 
-        and t.destination_city = rs.destination_city
 )
 
 select * from fct_trips

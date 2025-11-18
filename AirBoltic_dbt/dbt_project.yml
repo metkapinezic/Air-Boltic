@@ -42,6 +42,6 @@ models:
       +schema: dim
 
 # Fact tables
-    dim:
+    fct:
       +materialized: view 
       +schema: fct
