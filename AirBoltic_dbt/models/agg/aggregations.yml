@@ -1,0 +1,89 @@
+version: 2
+
+models:
+  - name: agg_daily_trip_metrics.sql
+    description: Daily aggregated trip metrics by route
+    columns:
+      - name: metric_date
+        description: Date of the metrics (UTC)
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: date
+
+      - name: route_key
+        description: Surrogate key for the route (origin + destination)
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('fct_trips')
+              field: route_key
+
+      - name: origin_city
+        description: Origin city of the route
+        data_tests:
+          - not_null
+
+      - name: destination_city
+        description: Destination city of the route
+        data_tests:
+          - not_null
+
+      - name: route_name
+        description: Formatted route name (Origin → Destination)
+        data_tests:
+          - not_null
+
+      - name: total_seats_sold
+        description: Total number of seats sold on this route for the day
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: number
+
+      - name: total_trip_revenue_eur
+        description: Total revenue in EUR from all trips on this route for the day
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: number
+
+      - name: unique_customers
+        description: Number of unique customers who flew this route on this day
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: number
+
+      - name: avg_revenue_per_customer_eur
+        description: Average revenue per unique customer in EUR
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: number
+
+      - name: num_trips
+        description: Number of distinct trips on this route for the day
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: number
+
+      - name: aircraft_capacity
+        description: Maximum aircraft capacity for trips on this route
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: number
+
+      - name: avg_load_factor
+        description: Average load factor (seats sold / total capacity) for the route
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 1
+
+      - name: dbt_updated_at
+        description: Timestamp when this record was last updated
+        data_tests:
+          - not_null

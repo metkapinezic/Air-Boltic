@@ -41,7 +41,12 @@ models:
       +materialized: table 
       +schema: dim
 
-# Fact tables
+    # Fact tables
     fct:
       +materialized: view 
       +schema: fct
+
+    # aggregated tables
+    agg:
+      +materialized: view 
+      +schema: agg

@@ -3,29 +3,23 @@ with trips as (
 ),
 
 orders as (
-    select 
-        trip_id,
-        count(*) as seats_sold,
-        sum(price_eur) as trip_revenue_eur,
-        count(distinct customer_id) as unique_customers,
-        sum(price_eur) / nullif(count(distinct customer_id), 0) as revenue_per_customer_eur
-    from {{ ref('src_order') }}
-    where status = 'Finished'  
-    group by trip_id
+    select * from {{ ref('src_order') }}
+    where status = 'Finished'
 ),
 
 aeroplanes as (
     select * from {{ ref('dim_aeroplanes') }}
 ),
 
-
 fct_trips as (
     select
         -- Surrogate key
-        {{ dbt_utils.generate_surrogate_key(['t.trip_id']) }} as trip_key,
+        {{ dbt_utils.generate_surrogate_key(['o.order_id']) }} as trip_key,
         
-        -- Natural key
+        -- Natural keys
+        o.order_id,
         t.trip_id,
+        o.customer_id,
         
         -- Foreign keys
         t.airplane_id,
@@ -38,22 +32,19 @@ fct_trips as (
         t.start_timestamp,
         t.end_timestamp,
         
-    
-        
-        -- Aggregated order metrics
-        coalesce(o.seats_sold, 0) as seats_sold,
-        coalesce(o.trip_revenue_eur, 0) as trip_revenue_eur,
-        coalesce(o.unique_customers, 0) as unique_customers,
-        round(coalesce(o.revenue_per_customer_eur, 0), 2) as revenue_per_customer_eur,
+        -- Order details
+        o.seat_no,
+        o.price_eur as seat_price_eur,
+        o.status,
+        cast(null as timestamp) as booking_date,
         
         -- Capacity metrics
         a.max_seats as aircraft_capacity,
-        round(coalesce(o.seats_sold, 0) / nullif(a.max_seats, 0), 4) as load_factor,
         
         -- Audit columns
         current_timestamp() as dbt_updated_at
-    from trips t
-    left join orders o on t.trip_id = o.trip_id
+    from orders o
+    join trips t on o.trip_id = t.trip_id
     left join aeroplanes a on t.airplane_id = a.airplane_id
 )
 
