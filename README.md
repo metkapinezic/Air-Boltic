@@ -25,6 +25,7 @@ Key Deliverables and Principles
 - Consistent naming conventions (dim_*, fct_*, src_*, agg_*) to improve maintainability and user experience; this should be standardized and ideally enforced with automated checks
 
 If given more time, I would improve:
+- Take more time on the business insights and proposing new data for developing clear KPIs
 - Adding more tests in macros, observability, and data freshness alerts
 - Explicitly defining the use of incremental models in dbt for large tables
 
