@@ -48,7 +48,7 @@ With unlimited resources and full support from DevOps, I would introduce four en
 
 3. stg (Staging)
    - Mirrors production (same compute, same data, same permissions)
-   - Supports analyst UAT using local dbt repos
+   - Supports analyst UAT (user acceptance testing) using local dbt repos
    - Data refresh triggered by orchestration
 
 4. prod
