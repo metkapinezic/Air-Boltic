@@ -25,11 +25,16 @@ Key Deliverables and Principles
 - Consistent naming conventions (dim_*, fct_*, src_*, agg_*) to improve maintainability and user experience; this should be standardized and ideally enforced with automated checks
 
 If given more time, I would improve:
-- Take more time on the business insights and proposing new data for developing clear KPIs
+- Take more time on the business insights and proposing new data for developing clear KPIs:
+  - Market Analysis
+    - external market data on total flight volumes by route
+  - Cost analysis
+    - marketing spend by channel
+    - user retention vs acquisition
+  - Customer lifetime value
+  - New data: weather, competitor pricing strategies, market operating costs, travel demand, event calendars..
 - Adding more tests in macros, observability, and data freshness alerts
 - Explicitly defining the use of incremental models in dbt for large tables
-
-  
 
 PART 2
 
