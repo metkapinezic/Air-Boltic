@@ -1,4 +1,4 @@
-This repository was created using sample test data to demonstrate my skills in designing and implementing a data model aimed at understanding the key drivers of growth for Air Boltic.
+This repository was created using sample test data to demonstrate my skills in designing and implementing a data model aimed at understanding the key drivers of growth for a potential new airline offering.
 
 PART 1
 
